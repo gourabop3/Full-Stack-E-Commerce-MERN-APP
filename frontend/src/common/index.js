@@ -17,6 +17,14 @@ const SummaryApi = {
         url : `${backendDomin}/api/userLogout`,
         method : 'get'
     },
+    forgot_password : {
+        url : `${backendDomin}/api/forgot-password`,
+        method : 'post'
+    },
+    reset_password : {
+        url : `${backendDomin}/api/reset-password`,
+        method : 'post'
+    },
     allUser : {
         url : `${backendDomin}/api/all-user`,
         method : 'get'
