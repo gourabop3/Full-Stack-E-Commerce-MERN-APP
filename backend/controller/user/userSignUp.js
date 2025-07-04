@@ -31,8 +31,11 @@ async function userSignUpController(req,res){
             throw new Error("Something is wrong")
         }
 
+        // Prepare payload: we don't need to keep `confirmPassword` on the database for security reasons.
+        const { confirmPassword, ...restBody } = req.body
+
         const payload = {
-            ...req.body,
+            ...restBody,
             role : "GENERAL",
             password : hashPassword
         }

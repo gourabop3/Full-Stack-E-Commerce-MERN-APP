@@ -30,9 +30,13 @@ async function userSignInController(req,res){
         }
         const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: 60 * 60 * 8 });
 
+        // configure cookie options. In development we can not use `secure: true` because we usually run over plain HTTP.
+        // When the app is deployed behind HTTPS (for example in production), `NODE_ENV` should be set to "production" so
+        // that the cookie will be marked as secure.
         const tokenOption = {
             httpOnly : true,
-            secure : true
+            secure : process.env.NODE_ENV === "production", // use secure cookie only in production
+            sameSite : process.env.NODE_ENV === "production" ? "none" : "lax"
         }
 
         res.cookie("token",token,tokenOption).status(200).json({
