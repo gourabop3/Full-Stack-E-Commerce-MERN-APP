@@ -48,8 +48,33 @@ const SignUp = () => {
   const handleSubmit = async(e) =>{
       e.preventDefault()
 
-      if(data.password === data.confirmPassword){
+      // Frontend validation
+      if(!data.name.trim()){
+        toast.error("Please enter your name")
+        return
+      }
 
+      if(!data.email.trim()){
+        toast.error("Please enter your email")
+        return
+      }
+
+      if(!data.password){
+        toast.error("Please enter your password")
+        return
+      }
+
+      if(data.password.length < 6){
+        toast.error("Password must be at least 6 characters long")
+        return
+      }
+
+      if(data.password !== data.confirmPassword){
+        toast.error("Passwords do not match")
+        return
+      }
+
+      try {
         const dataResponse = await fetch(SummaryApi.signUP.url,{
             method : SummaryApi.signUP.method,
             headers : {
@@ -63,16 +88,12 @@ const SignUp = () => {
           if(dataApi.success){
             toast.success(dataApi.message)
             navigate("/login")
-          }
-
-          if(dataApi.error){
+          } else {
             toast.error(dataApi.message)
           }
-    
-      }else{
-        toast.error("Please check password and confirm password")
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.")
       }
-
   }
 
   return (

@@ -7,6 +7,7 @@ const userSignInController = require('../controller/user/userSignIn')
 const userDetailsController = require('../controller/user/userDetails')
 const authToken = require('../middleware/authToken')
 const userLogout = require('../controller/user/userLogout')
+const { forgotPasswordController, resetPasswordController } = require('../controller/user/forgotPassword')
 const allUsers = require('../controller/user/allUsers')
 const updateUser = require('../controller/user/updateUser')
 const UploadProductController = require('../controller/product/uploadProduct')
@@ -29,6 +30,10 @@ router.post("/signup",userSignUpController)
 router.post("/signin",userSignInController)
 router.get("/user-details",authToken,userDetailsController)
 router.get("/userLogout",userLogout)
+
+// Password reset routes
+router.post("/forgot-password", forgotPasswordController)
+router.post("/reset-password", resetPasswordController)
 
 //admin panel 
 router.get("/all-user",authToken,allUsers)

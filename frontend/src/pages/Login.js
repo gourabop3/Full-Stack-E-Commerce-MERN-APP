@@ -31,28 +31,40 @@ const Login = () => {
     const handleSubmit = async(e) =>{
         e.preventDefault()
 
-        const dataResponse = await fetch(SummaryApi.signIn.url,{
-            method : SummaryApi.signIn.method,
-            credentials : 'include',
-            headers : {
-                "content-type" : "application/json"
-            },
-            body : JSON.stringify(data)
-        })
-
-        const dataApi = await dataResponse.json()
-
-        if(dataApi.success){
-            toast.success(dataApi.message)
-            navigate('/')
-            fetchUserDetails()
-            fetchUserAddToCart()
+        // Frontend validation
+        if(!data.email.trim()){
+            toast.error("Please enter your email")
+            return
         }
 
-        if(dataApi.error){
-            toast.error(dataApi.message)
+        if(!data.password){
+            toast.error("Please enter your password")
+            return
         }
 
+        try {
+            const dataResponse = await fetch(SummaryApi.signIn.url,{
+                method : SummaryApi.signIn.method,
+                credentials : 'include',
+                headers : {
+                    "content-type" : "application/json"
+                },
+                body : JSON.stringify(data)
+            })
+
+            const dataApi = await dataResponse.json()
+
+            if(dataApi.success){
+                toast.success(dataApi.message)
+                navigate('/')
+                fetchUserDetails()
+                fetchUserAddToCart()
+            } else {
+                toast.error(dataApi.message)
+            }
+        } catch (error) {
+            toast.error("Something went wrong. Please try again.")
+        }
     }
 
     console.log("data login",data)

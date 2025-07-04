@@ -7,21 +7,33 @@ async function userSignInController(req,res){
         const { email , password} = req.body
 
         if(!email){
-            throw new Error("Please provide email")
+            return res.status(400).json({
+                message: "Please provide email",
+                error: true,
+                success: false,
+            })
         }
         if(!password){
-             throw new Error("Please provide password")
+            return res.status(400).json({
+                message: "Please provide password",
+                error: true,
+                success: false,
+            })
         }
 
         const user = await userModel.findOne({email})
 
        if(!user){
-            throw new Error("User not found")
+            return res.status(404).json({
+                message: "User not found",
+                error: true,
+                success: false,
+            })
        }
 
        const checkPassword = await bcrypt.compare(password,user.password)
 
-       console.log("checkPassoword",checkPassword)
+       console.log("checkPassword",checkPassword)
 
        if(checkPassword){
         const tokenData = {
@@ -32,7 +44,8 @@ async function userSignInController(req,res){
 
         const tokenOption = {
             httpOnly : true,
-            secure : true
+            secure : process.env.NODE_ENV === 'production', // Only secure in production
+            sameSite: 'strict'
         }
 
         res.cookie("token",token,tokenOption).status(200).json({
@@ -43,18 +56,17 @@ async function userSignInController(req,res){
         })
 
        }else{
-         throw new Error("Please check Password")
+         return res.status(401).json({
+            message: "Please check Password",
+            error: true,
+            success: false,
+         })
        }
 
-
-
-
-
-
-
     }catch(err){
-        res.json({
-            message : err.message || err  ,
+        console.error("Login error:", err)
+        res.status(500).json({
+            message : err.message || "Internal server error",
             error : true,
             success : false,
         })
